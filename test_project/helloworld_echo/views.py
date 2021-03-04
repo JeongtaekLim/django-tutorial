@@ -1,12 +1,13 @@
 from django.http import HttpResponse
-from django.shortcuts import render
 import requests
 import json
 from django.views.decorators.csrf import csrf_exempt
 
+
 def helloworld(request):
     print(request)
     return HttpResponse('Helloworld')
+
 
 @csrf_exempt
 def tfserving(request):

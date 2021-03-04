@@ -2,5 +2,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.helloworld, name='helloworld'),
+    path('helloworld', views.helloworld, name='helloworld'),
+    path('tfserving', views.tfserving, name='tfserving'),
 ]
+

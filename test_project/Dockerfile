@@ -15,6 +15,7 @@ WORKDIR /srv
 
 ENV LANG C.UTF-8
 ENV LC_ALL C.UTF-8
+
 # open port
 EXPOSE 8000
 

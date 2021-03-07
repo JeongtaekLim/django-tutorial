@@ -4,6 +4,7 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 import configparser
 
+
 def helloworld(request):
     print(request)
     return HttpResponse('Helloworld')

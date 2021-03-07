@@ -18,4 +18,5 @@ RUN rm -f /etc/nginx/sites-available/default
 RUN rm -f /etc/nginx/sites-enabled/default
 
 # Entrypoint
-ENTRYPOINT service nginx start && /bin/bash
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]

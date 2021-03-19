@@ -8,19 +8,18 @@ RUN apt-get update \
 
 RUN apt-get update && apt-get install -y vim supervisor nginx net-tools curl cron
 RUN pip install gunicorn django requests
+RUN apt-get install nginx
 
-# 현재 폴더를 srv 폴더에 추가합니다.
-ADD . /srv
-WORKDIR /srv
+# Nginx service setting file
+COPY test_project /etc/nginx/sites-enabled/
 
-ENV LANG C.UTF-8
-ENV LC_ALL C.UTF-8
+# Default nginx setting 을 지워주어야 한다.
+RUN rm -f /etc/nginx/sites-available/default
+RUN rm -f /etc/nginx/sites-enabled/default
 
-# open port
-EXPOSE 8000
+# Entrypoint
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
 
-# run gunicorn
-CMD exec gunicorn test_project.wsgi:application --bind 0.0.0.0:8000
 
-# docker build -t gunicorn .
-# docker run -d --rm -p 8000:8000 gunicorn
+# docker run -d --rm -p 80:80 nginx

@@ -1,0 +1,17 @@
+http {
+        upstream backend{
+        server 172.20.10.5:8000 weight=5;
+        server 172.20.10.5:8001;
+        server 172.20.10.5:8002 backup;
+    }
+
+    server{
+        listen 80;
+        server_name 0.0.0.0 127.0.0.1;
+        charset utf-8;
+
+        location/ {
+            proxy_pass http://backend;
+        }
+    }
+}

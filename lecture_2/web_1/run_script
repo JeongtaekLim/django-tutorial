@@ -1,0 +1,10 @@
+#EXPOSE 80
+#CMD exec service nginx start
+
+
+# docker build
+# docker build -t nginx .
+
+# docker run
+# docker run -it --rm -p 80:80 nginx /bin/bash
+# docker run -d --rm -p 80:80 web_1

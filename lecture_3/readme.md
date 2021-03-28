@@ -1,4 +1,4 @@
-목적 
+# 목적 
 `192.168.0.16:80/helloworld` 로 `get` 방식으로 `reqeust` 을 전송했을 때 `backend` 집합으로 `was1`, `was2` 서버에게 round robin 으로 전송함.  
 `192.168.0.16:80/helloworld` 로 `get` 방식으로 `reqeust` 을 전송했을 때 `backend` 집합으로 `was3`, `was4` 서버에게 round robin 으로 전송함.  
 `was1` 으로 `192.168.0.16:80/helloworld` 으로 request 가 날라올 시 `helloworld1` 을 반환  

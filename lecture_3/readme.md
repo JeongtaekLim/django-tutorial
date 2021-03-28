@@ -1,7 +1,15 @@
+목적 
+`192.168.0.16:80/helloworld` 로 `get` 방식으로 `reqeust` 을 전송했을 때 `backend` 집합으로 `was1`, `was2` 서버에게 round robin 으로 전송함.  
+`192.168.0.16:80/helloworld` 로 `get` 방식으로 `reqeust` 을 전송했을 때 `backend` 집합으로 `was3`, `was4` 서버에게 round robin 으로 전송함.  
+`was1` 으로 `192.168.0.16:80/helloworld` 으로 request 가 날라올 시 `helloworld1` 을 반환  
+`was2` 으로 `192.168.0.16:80/helloworld` 으로 request 가 날라올 시 `helloworld2` 을 반환  
+`was3` 으로 `192.168.0.16:80/helloworld` 으로 request 가 날라올 시 `helloworld3` 을 반환  
+`was4` 으로 `192.168.0.16:80/helloworld` 으로 request 가 날라올 시 `helloworld4` 을 반환          
+     
 아래와 같은 구조로 서버를 설계함.
 
 
-![Imgur](https://i.imgur.com/vOD1EXC.png)
+![Imgur](https://i.imgur.com/LSc28K0.png)
 
 1. Nginx 서버 셋팅은 default config 파일 http context(directive)에 아래 코드를 추가한다.<br>
  

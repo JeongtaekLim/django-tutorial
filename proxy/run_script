@@ -1,0 +1,8 @@
+# docker build
+docker build -t nginx_lec3 .
+
+# docker run with deamon
+docker run -d --rm -p 80:80 -p 81:81 nginx_lec3
+
+# docker run with bash
+docker run -it --rm -p 80:80 -p 81:81 nginx /bin/bash

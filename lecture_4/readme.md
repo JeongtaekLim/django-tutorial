@@ -19,13 +19,14 @@ django 에서 제공하는 로그인 기능을 배워 봅니다.
 아래 순서로 만들어 진다.  
 
 > 1) session이란 서버가 해당 서버(웹)로 접근(request)한 클라이언트(사용자)를 식별하는 방법
->2) 서버(웹)는 접근한 클라이언트(사용자)에게 response-header field인 set-cookie 값으로 클라이언트 식별자인 session-id(임의의 긴 문자열)를 발행(응답)한다.
->3) 서버로부터 발행(응답)된 session-id는 해당 서버(웹)와 클라이언트(브라우저) 메모리에 저장된다. 이때 클라이언트 메모리에 사용되는 cookie 타입은 세션 종료 시 같이 소멸되는 "Memory cookie"가 사용된다.
+> 2) 서버(웹)는 접근한 클라이언트(사용자)에게 response-header field인 set-cookie 값으로 클라이언트 식별자인 session-id(임의의 긴 문자열)를 발행(응답)한다.
+> 3) 서버로부터 발행(응답)된 session-id는 해당 서버(웹)와 클라이언트(브라우저) 메모리에 저장된다. 이때 클라이언트 메모리에 사용되는 cookie 타입은 세션 종료 시 같이 소멸되는 "Memory cookie"가 사용된다.
 
+## Django 에서 Session 사용 하기
+Session 을 사용하기 위해서 필요한 것들은 인증(Auth) 기능일 것입니다. 
+즉 인증 받은 회원에게 **일정 기간동안 고유의 id** 을 부여해야 하니 말이죠 
 
-
-
-
+### 
 장고는 특정 session id 를 포함하는 쿠키를 사용해서 각각의 브라우저와 사이트가 연결된 세션을 알아냅니다. 
 실질적인 세션의 data 사이트의 Database에 기본 설정값으로 저장됩니다 
 (이는 쿠키안에 데이터를 저장하는 것보다 더 보안에 유리하고, 쿠키는 악의적인 사용자에게 취약합니다).
@@ -44,3 +45,9 @@ MIDDLEWARE = [
     ...
     'django.contrib.sessions.middleware.SessionMiddleware',
     ....
+    
+    
+Session 특성 정보는 view 에 들어오는 request 에 들어 있습니다.  
+
+![pic1.png](./pic/pic1.png)
+

@@ -1,53 +1,275 @@
-# Session 기능
+# Log in
 
-django 에서 제공하는 로그인 기능을 배워 봅니다. 
+## Step 1: Setup
+Start by creating a new Django project. This code can live anywhere on your computer. On a Mac, the desktop is a convenient place and that's where we'll put this code. We can do all of the normal configuration from the command line:
 
-## Session 이란? 
-> 세션이라는 것은 Django 그리고 대부분의 인터넷에서 사용되는 메카니즘으로, **사이트와 특정 브라우저 사이의 "state"**를 유지시키는 것입니다. 
-세션은 당신이 매 브라우저마다 임의의 데이터를 저장하게 하고, 이 데이터가 브라우저에 접속할 때 마다 사이트에서 활용될 수 있도록 합니다. 
-세션에 연결된 각각의 데이터 아이템들은 "key"에 의해 인용되고, 이는 또다시 데이터를 찾거나 저장하는 데에 이용됩니다.
+create a new auth directory for our code on the Desktop
+install Django with Pipenv
+start the virtual environment shell
+create a new Django project called config
+create a new Sqlite database with migrate
+run the local server
+Here are the commands to run:
 
-내용이 어려운데 아래와 같이 정의할수 도 있다. 
+```shell script
+$ cd ~/Desktop
+$ mkdir accounts && cd accounts
+$ pipenv install django~=3.1.0
+$ pipenv shell
+(accounts) $ django-admin.py startproject config .
+(accounts) $ python manage.py migrate
+(accounts) $ python manage.py runserver
+```
 
-> 세션이란 일정 시간동안 같은 사용자(정확하게 브라우저를 말한다)로 부터 들어오는
-일련의 요구를 하나의 상태로 보고 그 상태를 일정하게 유지시키는 기술이라고 한다.
-또한 여기서 일정 시간이란 방문자가 웹 브라우저를 통해 웹 서버에 접속한 시점으로부터 웹 브라우저를 종료함으로써 연결을 끝내는 시점을 말하며
-즉, 방문자가 웹서버에 접속해 있는 상태를 하나의 단위로 보고 세션이라고 칭한다는 것.
-> 세션은 방문자의 요청에 따른 정보를 방문자 메모리에 저장하는 것이 아닌 웹 서버가 세션 아이디 파일을 만들어 서비스가 돌아가고 있는 서버에 저장을 하는것을 말한다.
+## Step 2: The Django auth app
+Django automatically installs the auth app when a new project is created. Look in the config/settings.py file under INSTALLED_APPS and you can see auth is one of several built-in apps Django has installed for us.
 
-즉 Session id 을 일시적으로 만들어 인증된 회원에게 부여한다는 의미이다.
-아래 순서로 만들어 진다.  
-
-> 1) session이란 서버가 해당 서버(웹)로 접근(request)한 클라이언트(사용자)를 식별하는 방법
-> 2) 서버(웹)는 접근한 클라이언트(사용자)에게 response-header field인 set-cookie 값으로 클라이언트 식별자인 session-id(임의의 긴 문자열)를 발행(응답)한다.
-> 3) 서버로부터 발행(응답)된 session-id는 해당 서버(웹)와 클라이언트(브라우저) 메모리에 저장된다. 이때 클라이언트 메모리에 사용되는 cookie 타입은 세션 종료 시 같이 소멸되는 "Memory cookie"가 사용된다.
-
-## Django 에서 Session 사용 하기
-Session 을 사용하기 위해서 필요한 것들은 인증(Auth) 기능일 것입니다. 
-즉 인증 받은 회원에게 **일정 기간동안 고유의 id** 을 부여해야 하니 말이죠 
-
-### 
-장고는 특정 session id 를 포함하는 쿠키를 사용해서 각각의 브라우저와 사이트가 연결된 세션을 알아냅니다. 
-실질적인 세션의 data 사이트의 Database에 기본 설정값으로 저장됩니다 
-(이는 쿠키안에 데이터를 저장하는 것보다 더 보안에 유리하고, 쿠키는 악의적인 사용자에게 취약합니다).
- 당신은 Django를 다른 장소 (캐시, 파일, "보안이 된" 쿠키)에 저장하도록 설정할 수 있지만, 그러나 기본 위치가 상대적으로 더 안전합니다.
- 
- 세션설정은 처음에 skeleton website를 생성했을 때 (in tutorial 2) 자동으로 사용할 수 있도록 설정되었습니다. 
-
-세션사용설정은 프로젝트 settings.py에서 아래와 같이 INSTALLED_APPS 와 MIDDLEWARE 부분에 있습니다.
-
+```python
+# config/settings.py
 INSTALLED_APPS = [
-    ...
+    'django.contrib.admin',
+    'django.contrib.auth', # Yoohoo!!!!
+    'django.contrib.contenttypes',
     'django.contrib.sessions',
-    ....
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+]
+```
+To use the auth app we need to add it to our project-level urls.py file. Make sure to add include on the second line. I've chosen to include the auth app at accounts/ but you can use any url pattern you want.
+```python
+# config/urls.py
+from django.contrib import admin
+from django.urls import path, include # new
 
-MIDDLEWARE = [
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('accounts/', include('django.contrib.auth.urls')), # new
+]
+```
+The auth app we've now included provides us with several authentication views and URLs for handling login, logout, and password management.
+
+The URLs provided by auth are:
+```python
+accounts/login/ [name='login']
+accounts/logout/ [name='logout']
+accounts/password_change/ [name='password_change']
+accounts/password_change/done/ [name='password_change_done']
+accounts/password_reset/ [name='password_reset']
+accounts/password_reset/done/ [name='password_reset_done']
+accounts/reset/<uidb64>/<token>/ [name='password_reset_confirm']
+accounts/reset/done/ [name='password_reset_complete']
+```
+There are associated auth views for each URL pattern, too. That means we only need to create a template to use each!
+
+
+## Step 3: Login Page
+
+Let's make our login page! Django by default will look within a templates folder called registration for auth templates. The login template is called login.html.
+
+Create a new directory called registration and the requisite login.html file within it. From the command line type Control-c to quit our local server and enter the following commands:
+```shell
+(accounts) $ mkdir templates
+(accounts) $ mkdir templates/registration
+(accounts) $ touch templates/registration/login.html
+```
+Note: Make sure that templates is created at the project level, not within an existing directory such as config. You can see the official source code here for further confirmation your structure is correct.
+
+Then include this template code in our login.html file:
+
+```html
+<!-- templates/registration/login.html -->
+<h2>Log In</h2>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Log In</button>
+</form>
+```
+This is a standard Django form using POST to send data and {% csrf_token %} tags for security concerns, namely to prevent a CSRF Attack. The form's contents are outputted between paragraph tags thanks to {{ form.as_p }} and then we add a "submit" button.
+
+Next update the settings.py file to tell Django to look for a templates folder at the project level. Update the DIRS setting within TEMPLATES as follows. This is a one-line change.
+
+```python
+# config/settings.py
+TEMPLATES = [
+    {
+        ...
+        'DIRS': [str(BASE_DIR.joinpath('templates'))],
+        ...
+    },
+]
+```
+Our login functionality now works but to make it better we should specify where to redirect the user upon a successful login. In other words, once a user has logged in, where should they be sent on the site? We use the LOGIN_REDIRECT_URL setting to specify this route. At the bottom of the settings.py file add the following to redirect the user to the homepage.
+
+```python
+# config/settings.py
+LOGIN_REDIRECT_URL = '/'
+```
+We're actually done at this point! If you now start up the Django server again with python manage.py runserver and navigate to our login page at http://127.0.0.1:8000/accounts/login/ you'll see the following.
+
+![login](https://learndjango.com/static/images/tutorials/login_logout/login.png)
+
+
+## Step 4: Create users
+But there's one missing piece: we haven't created any users yet. Let's quickly do that by making a superuser account from the command line. Quit the server with Control+c and then run the command python manage.py createsuperuser. Answer the prompts and note that your password will not appear on the screen when typing for security reasons.
+
+```shell script
+(accounts) $ python manage.py createsuperuser
+Username (leave blank to use 'wsv'):
+Email address: will@learndjango.com
+Password:
+Password (again):
+Superuser created successfully.
+```
+
+![login_](https://learndjango.com/static/images/tutorials/login_logout/homepage-error.png)
+
+Now spin up the server again with python manage.py runserver and refresh the page at http://127.0.0.1:8000/accounts/login/. Enter the login info for your just-created user.
+Homepage error
+
+We know that our login worked because we were redirected to the homepage, but we haven't created it yet so we see the error Page not found. Let's fix that!
+
+## Step 5: Create a homepage
+We want a simple homepage that will display one message to logged out users and another to logged in users.
+
+First quit the local server with Control+c and then create new base.html and home.html files. Note that these are located within the templates folder but not within templates/registration/ where Django auth looks by default for user auth templates.
+
+```shell script
+
+(accounts) $ touch templates/base.html
+(accounts) $ touch templates/home.html
+```
+Add the following code to each:
+```html
+<!-- templates/base.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}Django Auth Tutorial{% endblock %}</title>
+</head>
+<body>
+  <main>
+    {% block content %}
+    {% endblock %}
+  </main>
+</body>
+</html>
+```
+
+```html
+<!-- templates/home.html -->
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+  Hi {{ user.username }}!
+{% else %}
+  <p>You are not logged in</p>
+  <a href="{% url 'login' %}">Log In</a>
+{% endif %}
+{% endblock %}
+```
+While we're at it, we can update login.html too to extend our new base.html file:
+```html
+<!-- templates/registration/login.html -->
+{% extends 'base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<h2>Log In</h2>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Log In</button>
+</form>
+{% endblock %}
+```
+Now update our urls.py file so we can display the homepage. Normally I would prefer to create a dedicated pages app for this purpose, but we don't have to and for simplicity, we'll just add it to our existing config/urls.py file. Make sure to import TemplateView on the third line and then add a urlpattern for it at the path ''.
+
+```python
+# config/urls.py
+from django.contrib import admin
+from django.urls import path, include
+from django.views.generic.base import TemplateView # new
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('accounts/', include('django.contrib.auth.urls')),
+    path('', TemplateView.as_view(template_name='home.html'), name='home'), # new
+]
+```
+
+And we're done. If you start the Django server again with python manage.py runserver and navigate to the homepage at http://127.0.0.1:8000/ you'll see the following:
+
+![Homepage logged in](https://learndjango.com/static/images/tutorials/login_logout/homepage-loggedin.png)
+
+It worked! But how do we logout? The only option currently is to go into the admin panel at http://127.0.0.1:8000/admin/ and click on the "Logout" link in the upper right corner.
+
+![Admin page logout link](https://learndjango.com/static/images/tutorials/login_logout/admin-logout.png)
+This will log us out as seen by the redirect page:
+
+![Admin page logged out](https://learndjango.com/static/images/tutorials/login_logout/admin-loggedout.png)
+
+If you go to the homepage again at http://127.0.0.1:8000/ and refresh the page, we can see we're logged out.
+
+![Home page logged out](https://learndjango.com/static/images/tutorials/login_logout/homepage-loggedout.png)
+ 
+ 
+## Step 6: Logout link
+Let's add a logout link to our page so users can easily toggle back and forth between the two states. Fortunately the Django auth app already provides us with a built-in url and view for this. And if you think about it, we don't need to display anything on logout so there's no need for a template. All really we do after a successful "logout" request is redirect to another page.
+
+So let's first add a link to the built-in logout url in our home.html file:
+```html
+<!-- templates/home.html-->
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+  Hi {{ user.username }}!
+  <p><a href="{% url 'logout' %}">Log Out</a></p>
+{% else %}
+  <p>You are not logged in</p>
+  <a href="{% url 'login' %}">Log In</a>
+{% endif %}
+{% endblock %}
+```
+Then update settings.py with our redirect link which is called LOGOUT_REDIRECT_URL. Add it right next to our login redirect so the bottom of the settings.py file should look as follows:
+
+```python
+# config/settings.py
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/' # new
+Actually, now that we have a homepage view we should use that instead of our current hardcoded approach. What's the url name of our homepage? It's home, which we named in our config/urls.py file:
+```
+
+```python
+# config/urls.py
     ...
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    ....
-    
-    
-Session 특성 정보는 view 에 들어오는 request 에 들어 있습니다.  
+    path('', TemplateView.as_view(template_name='home.html'), name='home'),
+    ...
+```
+So we can replace '/' with home at the bottom of the settings.py file:
 
-![pic1.png](./pic/pic1.png)
+```python
+# config/settings.py
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'home'
+```
 
+Now if you revisit the homepage and login you'll be redirected to the new homepage that has a "logout" link for logged in users.
+
+![Homepage logout link](https://learndjango.com/static/images/tutorials/login_logout/homepage-logout-link.png)
+
+Clicking it takes you back to the homepage with a "login" link.
+
+![Homepage login link](https://learndjango.com/static/images/tutorials/login_logout/homepage-login-link.png)
+
+
+ 
+ 

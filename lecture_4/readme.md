@@ -1,7 +1,9 @@
 # Log in 기능 구현
-- 해당 페이지는 [해당 page](https://learndjango.com/tutorials/django-login-and-logout-tutorial) 을 참조해 만들어졌습니다. 
+- 해당 페이지는 [해당 page](https://learndjango.com/tutorials/django-login-and-logout-tutorial) 을 참조해 만들어졌습니다.
 
-## Step 1: Setup
+## Object 
+
+### Step 1: Setup
 Start by creating a new Django project. This code can live anywhere on your computer. On a Mac, the desktop is a convenient place and that's where we'll put this code. We can do all of the normal configuration from the command line:
 
 create a new auth directory for our code on the Desktop
@@ -22,7 +24,7 @@ $ pipenv shell
 (accounts) $ python manage.py runserver
 ```
 
-## Step 2: The Django auth app
+### Step 2: The Django auth app
 Django automatically installs the auth app when a new project is created. Look in the config/settings.py file under INSTALLED_APPS and you can see auth is one of several built-in apps Django has installed for us.
 
 ```python
@@ -63,7 +65,7 @@ accounts/reset/done/ [name='password_reset_complete']
 There are associated auth views for each URL pattern, too. That means we only need to create a template to use each!
 
 
-## Step 3: Login Page
+### Step 3: Login Page
 
 Let's make our login page! Django by default will look within a templates folder called registration for auth templates. The login template is called login.html.
 
@@ -111,7 +113,7 @@ We're actually done at this point! If you now start up the Django server again w
 ![login](https://learndjango.com/static/images/tutorials/login_logout/login.png)
 
 
-## Step 4: Create users
+### Step 4: Create users
 But there's one missing piece: we haven't created any users yet. Let's quickly do that by making a superuser account from the command line. Quit the server with Control+c and then run the command python manage.py createsuperuser. Answer the prompts and note that your password will not appear on the screen when typing for security reasons.
 
 ```shell script
@@ -130,7 +132,7 @@ Homepage error
 
 We know that our login worked because we were redirected to the homepage, but we haven't created it yet so we see the error Page not found. Let's fix that!
 
-## Step 5: Create a homepage
+### Step 5: Create a homepage
 We want a simple homepage that will display one message to logged out users and another to logged in users.
 
 First quit the local server with Control+c and then create new base.html and home.html files. Note that these are located within the templates folder but not within templates/registration/ where Django auth looks by default for user auth templates.
@@ -220,7 +222,7 @@ If you go to the homepage again at http://127.0.0.1:8000/ and refresh the page, 
 ![Home page logged out](https://learndjango.com/static/images/tutorials/login_logout/homepage-loggedout.png)
  
  
-## Step 6: Logout link
+### Step 6: Logout link
 Let's add a logout link to our page so users can easily toggle back and forth between the two states. Fortunately the Django auth app already provides us with a built-in url and view for this. And if you think about it, we don't need to display anything on logout so there's no need for a template. All really we do after a successful "logout" request is redirect to another page.
 
 So let's first add a link to the built-in logout url in our home.html file:

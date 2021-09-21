@@ -1,4 +1,5 @@
-# Log in
+# Log in 기능 구현
+- 해당 페이지는 [해당 page](https://learndjango.com/tutorials/django-login-and-logout-tutorial) 을 참조해 만들어졌습니다. 
 
 ## Step 1: Setup
 Start by creating a new Django project. This code can live anywhere on your computer. On a Mac, the desktop is a convenient place and that's where we'll put this code. We can do all of the normal configuration from the command line:

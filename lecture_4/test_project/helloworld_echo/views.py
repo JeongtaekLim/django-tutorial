@@ -6,7 +6,7 @@ import configparser
 
 
 def helloworld(request):
-    print(request)
+    request.session.modified = True
     return HttpResponse('Helloworld')
 
 
@@ -28,4 +28,3 @@ def tfserving(request):
 
     # msg
     return HttpResponse('return value : {}'.format(ret))
-

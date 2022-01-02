@@ -35,7 +35,7 @@ Session 을 사용하기 위해서 필요한 것들은 인증(Auth) 기능일 �
  세션설정은 처음에 skeleton website를 생성했을 때 (in tutorial 2) 자동으로 사용할 수 있도록 설정되었습니다. 
 
 세션사용설정은 프로젝트 settings.py에서 아래와 같이 INSTALLED_APPS 와 MIDDLEWARE 부분에 있습니다.
-
+```python
 INSTALLED_APPS = [
     ...
     'django.contrib.sessions',
@@ -45,9 +45,12 @@ MIDDLEWARE = [
     ...
     'django.contrib.sessions.middleware.SessionMiddleware',
     ....
-    
+```
     
 Session 특성 정보는 view 에 들어오는 request 에 들어 있습니다.  
 
 ![pic1.png](./pic/pic1.png)
+
+Session 정보는 어떤 브라우져와 연결 되어 있는지에 대해서 확인할 수 있습니다. 
+
 

@@ -1,5 +1,5 @@
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.template import loader
 from django.views.decorators.csrf import csrf_exempt
 
@@ -13,8 +13,9 @@ def helloworld(request, **kwargs):
 
 
 @csrf_exempt
-def details(request, question_id):
-    return HttpResponse("You're looking at question %s." % question_id)
+def detail(request, question_id):
+    question = get_object_or_404(Question, pk=question_id)
+    return render(request, 'polls/detail.html', {'question': question})
 
 
 def reuslts(request, question_id):

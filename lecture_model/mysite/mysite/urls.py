@@ -16,8 +16,7 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path, include
-
-from polls.views import helloworld, details, reuslts, vote, index
+from polls.views import helloworld
 
 urlpatterns = [
     path('admin/', admin.site.urls),

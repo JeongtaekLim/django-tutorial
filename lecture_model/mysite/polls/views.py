@@ -115,17 +115,26 @@ def search_questions(request):
     elif request.method == 'POST':
         if 'search_word' in request.POST.keys():
             # 입력된 field 와 값에 해당 하는 하나의 instance 을 가져옵니다.
+            # html form 에서 field , search_word 란 이름으로 변수를 가져옵니다.
             trgt_field = request.POST["field"]
             trgt_word = request.POST["search_word"]
-            search_word_result = Question.objects.all().get(**{trgt_field: trgt_word})
 
-            valid_values = []
-            for field in valid_fields:
-                value = getattr(search_word_result, field)
-                valid_values.append(value)
+            # Question DB에서 입력된 row 을 가져옵니다.
+            # search_word_result = Question.objects.all().get(**{trgt_field: trgt_word})
+            search_word_results = Question.objects.all().filter(**{trgt_field: trgt_word})
+            # QuerySet 에서 각 field 이름에 해당 하는 정보를 가져옵니다.
 
-            context = {"valid_fields": valid_fields, "search_word_result": search_word_result,
-                       "valid_values": valid_values}
+            valid_values_bucket = []
+            for search_word_result in search_word_results:
+                valid_values = []
+                for field in valid_fields:
+                    value = getattr(search_word_result, field)
+                    valid_values.append(value)
+                valid_values_bucket.append(valid_values)
+
+            # 입력 받은 정보를 html page 에 보내줍니다.
+            context = {"valid_fields": valid_fields, "search_word_results": search_word_results,
+                       "valid_values_bucket": valid_values_bucket}
             return render(request, 'polls/search_questions.html', context=context)
 
         else:

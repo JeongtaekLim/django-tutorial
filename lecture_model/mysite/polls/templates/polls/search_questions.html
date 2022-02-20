@@ -39,20 +39,20 @@ Select features
 </form>
 
 <div id="search_word_result">
-    {% if search_word_result %}
+    {% if search_word_results %}
     <table border="1">
         {% for field in valid_fields %}
            <th>{{field}}</th>
         {% endfor %}
-
-        {% if valid_values %}
-            <tr>
-            {% for value in valid_values %}
-                <td> {{value}} </td>
-            {% endfor %}
-            </tr>
-        {% endif %}
-
+            {% if valid_values_bucket %}
+                {% for valid_values in valid_values_bucket %}
+                    <tr>
+                    {% for value in valid_values %}
+                        <td> {{value}} </td>
+                    {% endfor %}
+                    </tr>
+                {% endfor %}
+            {% endif %}
     </table>
 
     {% endif %}

@@ -1,5 +1,5 @@
 from django.utils import timezone
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from polls.models import Question, Choice
@@ -39,3 +39,98 @@ def vote(request, question_id):
         selected_choice.save()
 
         return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
+
+
+def add_question(request):
+    """
+    Description:
+        question 을 추가합니다.
+    :param request:
+    :return:
+    """
+    if request.method == 'GET':
+        return render(request, 'polls/add_question.html')
+
+    else:
+        question = request.POST['question_text']
+        # save data
+        Question.objects.create(question_text=question, pub_date=timezone.now())
+        print(Question.objects.all())
+        return HttpResponse('hello')
+
+
+def show_questions(request):
+    """
+    Description:
+        Questions 모든 정보를 보여줍니다.
+    """
+
+    querys = Question.objects.all()
+    fields = Question._meta.get_fields()
+
+    # db instance 에서 가져 올 수 있는 field 이름 가져오기
+    valid_fields = {}
+    for field in fields:
+        for query in querys:
+            try:
+                eval('query.{}'.format(field.name))
+                valid_fields[str(field.name)] = field.name
+            except AttributeError as ae:
+                print(ae)
+
+    # 모든 db 을 보여주는 table 만들기
+    query_table = []
+    for query in querys:
+        elements = []
+        msg = ''
+        for name in valid_fields:
+            element = str(eval('query.{}'.format(valid_fields[name])))
+            elements.append(str(element))
+            msg += str(element)
+        query_table.append(elements)
+        print(msg)
+
+    return render(request, 'polls/show_questions.html',
+                  context={"query_table": query_table, "valid_fields": valid_fields})
+
+
+def search_questions(request):
+    fields = Question._meta.get_fields()
+    querys = Question.objects.all()
+
+    # db instance 에서 가져 올 수 있는 field 이름 가져오기
+    valid_fields = {}
+    for field in fields:
+        for query in querys:
+            try:
+                eval('query.{}'.format(field.name))
+                valid_fields[str(field.name)] = field.name
+            except AttributeError as ae:
+                pass;
+
+    if request.method == 'GET':
+        context = {"valid_fields": valid_fields}
+        return render(request, 'polls/search_questions.html', context=context)
+
+    elif request.method == 'POST':
+        if 'search_word' in request.POST.keys():
+            # 입력된 field 와 값에 해당 하는 하나의 instance 을 가져옵니다.
+            trgt_field = request.POST["field"]
+            trgt_word = request.POST["search_word"]
+            search_word_result = Question.objects.all().get(**{trgt_field: trgt_word})
+
+            valid_values = []
+            for field in valid_fields:
+                value = getattr(search_word_result, field)
+                valid_values.append(value)
+
+            context = {"valid_fields": valid_fields, "search_word_result": search_word_result,
+                       "valid_values": valid_values}
+            return render(request, 'polls/search_questions.html', context=context)
+
+        else:
+            result = Question.objects.values(request.POST['select_query'])
+            context = {"valid_fields": valid_fields, "result": result}
+            return render(request, 'polls/search_questions.html', context=context)
+    else:
+        raise NotImplementedError

@@ -155,7 +155,7 @@ def signup_questioner(request):
     """
     if request.method == 'GET':
         form = SignUpQuestionerForm()
-        return render(request, 'polls:signup_questioner.html', {'form': form})
+        return render(request, 'polls/signup_questioner.html', {'form': form})
 
     elif request.method == 'POST':
         pass

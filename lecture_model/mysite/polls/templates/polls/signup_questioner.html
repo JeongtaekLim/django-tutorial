@@ -5,7 +5,14 @@
     <title>Title</title>
 </head>
 <body>
-    {{form}}
+<form action="{% url 'polls:signup_questioner' %}" method="post">
+{% csrf_token %}
+<!--    {{form}}-->
+    {% for field in form %}
+        {{field.label}} : {{field}} <p/>
+    {% endfor %}
+    <input type="submit" value="저장">
+</form>
 </body>
 </html>
 

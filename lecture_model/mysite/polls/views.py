@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from polls.forms import SignUpQuestionerForm
-from polls.models import Question, Choice
+from polls.models import Question, Choice, SignupQuestioner
 from django.views import generic
 
 
@@ -150,6 +150,7 @@ def signup_questioner(request):
     """
     Description:
         질문자를 등록 합니다.
+        (해당 view function 은 django form 을 사용해 데이터를 얻어)
     :param request:
     :return:
     """
@@ -158,6 +159,14 @@ def signup_questioner(request):
         return render(request, 'polls/signup_questioner.html', {'form': form})
 
     elif request.method == 'POST':
-        pass
+        form = SignUpQuestionerForm(request.POST)
+        if form.is_valid():
+            inst = SignupQuestioner(name=form.data['name'],
+                                    sex=form.data['sex'],
+                                    company=form.data['company'],
+                                    email=form.data['email'],
+                                    password=form.data['password'])
+            inst.save()
+            return HttpResponse('Thanks')
     else:
         raise NotImplementedError

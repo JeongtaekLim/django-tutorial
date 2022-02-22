@@ -29,3 +29,12 @@ class Choice(models.Model):
 
     def __str__(self):
         return self.choice_text
+
+
+class SignupQuestioner(models.Model):
+    name = models.CharField(max_length=100)
+    CHOICES = [('남', '남'), ('여', '여')]
+    sex = models.CharField(choices=CHOICES, max_length=100)
+    company = models.EmailField(max_length=100)
+    email = models.CharField(max_length=100)
+    password = models.CharField(max_length=100)

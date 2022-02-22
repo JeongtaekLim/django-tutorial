@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from polls.models import Question, Choice, SignupQuestioner
+from polls.models import Question, Choice, SignupQuestioner, SignupAnswerer
 
 
 class QuestionAdmin(admin.ModelAdmin):
@@ -34,3 +34,4 @@ class QuestionAdmin(admin.ModelAdmin):
 admin.site.register(Choice)
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(SignupQuestioner)
+admin.site.register(SignupAnswerer)

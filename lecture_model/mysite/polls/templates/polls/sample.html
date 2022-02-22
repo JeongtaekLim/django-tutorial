@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+1. for 구문을 작동해 Question db에 들어 있는 내용 정보들을 모두 가져옵니다.
+{% for question in questions %}
+    <p>{{question}}</p>
+{% endfor %}
+
+2. 모든 Question db 에 연결되어 있는 Choice Table 의 모든 정보들을 모두 가져옵니다.<br>
+{% for question in questions %}
+    <h>question: {{ question }}</h>
+    <p>
+        choice : {% for choice in question.choice_set.all %}
+        {{choice}} <br>
+        {% endfor %}
+    </p>
+
+{% endfor %}
+
+</body>
+
+</html>

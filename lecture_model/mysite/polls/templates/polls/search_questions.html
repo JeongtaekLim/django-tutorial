@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+Select features
+<form action="{% url 'polls:search_questions' %}" method="post" id="column_search">
+    {% csrf_token %}
+    <input type="submit" value="search">
+    <div id="results">
+        {% if result %}
+        {%for r in result %}
+        {{r}}
+        {% endfor %}
+        {% endif %}
+    </div>
+</form>
+<select name="select_query" form="column_search">
+    {% for field in valid_fields %}
+    <option>{{field}}</option>
+    {% endfor %}
+</select>
+
+
+<form action="{% url 'polls:search_questions' %}" method="post" id="row_search" name="row_search">
+    {% csrf_token %}
+    검색 column 명 :
+
+    <select name="field" form="row_search">
+        {% for field in valid_fields %}
+        <option>{{field}}</option>
+        {% endfor %}
+    </select>
+
+    <input type="text" value="값을 입력하세요" name="search_word">
+    <input type="submit" value="search">
+</form>
+
+<div id="search_word_result">
+    {% if search_word_results %}
+    <table border="1">
+        {% for field in valid_fields %}
+           <th>{{field}}</th>
+        {% endfor %}
+            {% if valid_values_bucket %}
+                {% for valid_values in valid_values_bucket %}
+                    <tr>
+                    {% for value in valid_values %}
+                        <td> {{value}} </td>
+                    {% endfor %}
+                    </tr>
+                {% endfor %}
+            {% endif %}
+    </table>
+
+    {% endif %}
+</div>
+
+
+</body>
+</html>

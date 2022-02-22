@@ -1,5 +1,6 @@
 from django.urls import path
-from polls.views import vote, IndexView, DetailView, ResultsView, add_question, show_questions, search_questions
+from polls.views import vote, IndexView, DetailView, ResultsView, add_question, show_questions, search_questions, \
+    signup_questioner
 
 app_name = 'polls'
 urlpatterns = [
@@ -10,5 +11,5 @@ urlpatterns = [
     path('add_question', add_question, name='add_question'),
     path('show_questions', show_questions, name='show_questions'),
     path('search_questions', search_questions, name='search_questions'),
-
+    path('signup_questioner', signup_questioner, name='signup_questioner'),
 ]

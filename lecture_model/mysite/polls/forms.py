@@ -9,7 +9,7 @@ class SignUpQuestionerForm(forms.Form):
 
     CHOICES = [('남', '남'), ('여', '여')]
     name = forms.TextInput()
-    age = forms.ChoiceField(CHOICES, widget=forms.RadioSelect)
+    age = forms.ChoiceField(choices=CHOICES, widget=forms.RadioSelect)
     email = forms.EmailField()
     company = forms.TextInput()
     password = forms.PasswordInput()

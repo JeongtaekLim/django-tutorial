@@ -2,6 +2,7 @@ from django.utils import timezone
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
+from polls.forms import SignUpQuestionerForm
 from polls.models import Question, Choice
 from django.views import generic
 
@@ -122,8 +123,8 @@ def search_questions(request):
             # Question DB에서 입력된 row 을 가져옵니다.
             # search_word_result = Question.objects.all().get(**{trgt_field: trgt_word})
             search_word_results = Question.objects.all().filter(**{trgt_field: trgt_word})
-            # QuerySet 에서 각 field 이름에 해당 하는 정보를 가져옵니다.
 
+            # QuerySet 에서 각 field 이름에 해당 하는 정보를 가져옵니다.
             valid_values_bucket = []
             for search_word_result in search_word_results:
                 valid_values = []
@@ -141,5 +142,22 @@ def search_questions(request):
             result = Question.objects.values(request.POST['select_query'])
             context = {"valid_fields": valid_fields, "result": result}
             return render(request, 'polls/search_questions.html', context=context)
+    else:
+        raise NotImplementedError
+
+
+def signup_questioner(request):
+    """
+    Description:
+        질문자를 등록 합니다.
+    :param request:
+    :return:
+    """
+    if request.method == 'GET':
+        form = SignUpQuestionerForm()
+        return render(request, 'polls:signup_questioner.html', {'form': form})
+
+    elif request.method == 'POST':
+        pass
     else:
         raise NotImplementedError

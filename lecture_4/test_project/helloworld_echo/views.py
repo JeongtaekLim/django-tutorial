@@ -8,7 +8,7 @@ import configparser
 def auth_check(request):
     print(request)
     print(request.user)
-    print(request.user.is_authenticated])
+    print(request.user.is_authenticated)
     return HttpResponse(str(request.user))
 
 def helloworld(request):

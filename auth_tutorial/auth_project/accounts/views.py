@@ -8,6 +8,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import generic
 
+from accounts.forms import CustomUserCreationForm
 
 
 class SignUpView(generic.CreateView):
@@ -46,7 +47,9 @@ def signup(request):
             user = form.save()
             auth.login(request, user)
             return redirect('home')
-
+        else:
+            print(form.errors['username'])
+            return render(request, template_name='accounts/signup.html', context={'errors': form.errors})
 
     elif request.method == 'GET':
         form = UserCreationForm()

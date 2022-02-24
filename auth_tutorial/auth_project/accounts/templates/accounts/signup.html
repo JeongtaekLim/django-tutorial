@@ -7,9 +7,16 @@
 <body>
 <form method="post">
     {% csrf_token %}
-    {% for field in form %}
-    {{field.name}} : {{field}} <p>
-    {% endfor %}
+    {% if not errors %}
+        {% for field in form %}
+            {{field.name}} : {{field}} <p>
+        {% endfor %}
+    {% else %}
+        errors!
+        {% for error, value in errors.items %}
+            {{error}} {{value}}
+        {% endfor %}
+    {% endif %}
     <input type="submit" value="enroll">
 </form>
 </body>

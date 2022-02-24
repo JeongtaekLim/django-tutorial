@@ -1,6 +1,6 @@
 from django.utils import timezone
 from django.http import HttpResponseRedirect, HttpResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from polls.forms import SignUpQuestionerForm, SignUpAnswererForm
 from polls.models import Question, Choice, SignupQuestioner
@@ -179,13 +179,14 @@ def signup_answerer(request):
         (해당 view function 은 django modelform 을 사용해 데이터를 얻어오고 저장합니다.)
     :param request:
     :return:
-
     """
     if request.method == 'GET':
         form = SignUpAnswererForm()
-        return render(request, 'polls/signup_questioner.html', {'form': form})
-        pass
+        return render(request, 'polls/signup_answerer.html', {'form': form})
     elif request.method == 'POST':
-        pass
+        form = SignUpAnswererForm(request.POST)
+        if form.is_valid():
+            inst = form.save()
+            return HttpResponse('회원저장완료')
     else:
         raise NotImplementedError

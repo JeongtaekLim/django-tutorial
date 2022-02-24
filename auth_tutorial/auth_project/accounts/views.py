@@ -48,7 +48,6 @@ def signup(request):
             auth.login(request, user)
             return redirect('home')
         else:
-            print(form.errors['username'])
             return render(request, template_name='accounts/signup.html', context={'errors': form.errors})
 
     elif request.method == 'GET':

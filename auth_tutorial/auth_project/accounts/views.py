@@ -28,7 +28,6 @@ def only_login(request):
     elif request.user.is_authenticated is None:
         return HttpResponse('Not login user')
 
-
 @login_required
 def only_login(request):
     return render(request, template_name='accounts/only_login.html')
@@ -41,7 +40,7 @@ def only_pai(request):
 
 def signup(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST)
         result = form.is_valid()
         if form.is_valid():
             user = form.save()
@@ -51,7 +50,7 @@ def signup(request):
             return render(request, template_name='accounts/signup.html', context={'errors': form.errors})
 
     elif request.method == 'GET':
-        form = UserCreationForm()
+        form = CustomUserCreationForm()
         return render(request, template_name='accounts/signup.html', context={'form': form})
 
     else:

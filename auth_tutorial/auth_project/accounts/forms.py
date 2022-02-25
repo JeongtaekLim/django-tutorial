@@ -6,12 +6,25 @@
 # @Software: PyCharm
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from accounts.models import CustomUser
+
 from django import forms
+
+
+# class CustomUserCreationForm(UserCreationForm):
+#     email = forms.EmailField(max_length=200)
+#
+#     class Meta:
+#         model = User
+#         fields = ('username', 'email', "password1", "password2")
+#
 
 
 class CustomUserCreationForm(UserCreationForm):
     email = forms.EmailField(max_length=200)
+    region = forms.CharField()
+    phone_number = forms.IntegerField()
 
     class Meta:
-        model = User
-        fields = ('username', 'email', "password1", "password2")
+        model = CustomUser
+        fields = ('username', 'email' 'password1', 'password2', 'region', 'phone_number')

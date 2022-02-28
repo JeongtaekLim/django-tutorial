@@ -10,3 +10,11 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.username
+
+
+class GoldUser(models.Model):
+    validate_date = models.DateField()
+
+    class Meta:
+        permissions = [('gold_member', 'Gold member')]
+

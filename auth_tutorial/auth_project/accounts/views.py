@@ -1,14 +1,18 @@
 # accounts/views.py
 from django.contrib import auth
-from django.contrib.auth import authenticate
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, get_user_model
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import Permission
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import generic
 
 from accounts.forms import CustomUserCreationForm
+from django.contrib.contenttypes.models import ContentType
+
+from accounts.models import GoldUser
 
 
 class SignUpView(generic.CreateView):
@@ -27,6 +31,7 @@ def only_login(request):
         return HttpResponse('Login user')
     elif request.user.is_authenticated is None:
         return HttpResponse('Not login user')
+
 
 @login_required
 def only_login(request):
@@ -55,3 +60,22 @@ def signup(request):
 
     else:
         raise NotImplementedError
+
+
+@login_required
+@permission_required('accounts.gold_member', login_url=reverse_lazy('accounts:gold_member_guide'))
+def only_gold(request):
+    return HttpResponse('Welcome gold member(호갱)')
+
+
+def gold_member_guide(request):
+    return HttpResponse('Gold 회원이 되면 좋은점. 1. 꽁짜 커피 ')
+
+
+@login_required
+def buy_gold_member(request):
+    user = get_user_model().objects.get(username=request.user)
+    content_type = ContentType.objects.get_for_model(GoldUser)
+    perm = Permission.objects.get(codename='gold_member', content_type=content_type)
+    user.user_permissions.add(perm)
+    return HttpResponse("Now {} got gold member".format(request.user))

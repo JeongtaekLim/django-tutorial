@@ -3,6 +3,7 @@ from django.contrib import auth
 from django.contrib.auth import authenticate, get_user_model
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import Permission
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
@@ -79,3 +80,28 @@ def buy_gold_member(request):
     perm = Permission.objects.get(codename='gold_member', content_type=content_type)
     user.user_permissions.add(perm)
     return HttpResponse("Now {} got gold member".format(request.user))
+
+
+@login_required
+def change_password(request):
+    if request.method == 'POST':
+        # login 한 유저 정보 얻음
+        user = get_user_model().objects.get(username=request.user)
+        password1 = request.POST['password1']
+        password2 = request.POST['password2']
+        if password1 == password2:
+            password = password1
+            varhash = make_password(password, None, 'md5')
+            user.set_password(varhash)
+            user.save()
+        else:
+            pass
+        return HttpResponse('True')
+
+    elif request.method == 'GET':
+        return render(request, template_name='accounts/change_password.html')
+    return HttpResponse('change password!')
+
+
+def echo(request):
+    return HttpResponse('hello')

@@ -1,47 +1,46 @@
 <!DOCTYPE html>
 <!--ajax_app/templates/simple_page.html-->
 <html lang="ko">
-  <head>
-    <meta charset="UTF-8" />
+<head>
+    <meta charset="UTF-8"/>
     <title>jQuery Ajax Method</title>
     <script src="https://code.jquery.com/jquery-1.12.4.min.js" id="a"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
-    <script id="b">
-      $(function () {
-        $("#requestBtn").on("click", function () {
-          $.ajax({
+
+</head>
+
+<body>
+<h1>$.ajax() 메소드</h1>
+<button id="requestBtn">$.ajax() 메소드 실행</button>
+<div id="reply"></div>
+>
+<p id="text"></p>
+</body>
+<!-- 특정 Dom(Button 등)에 대한 콜백 메소드를 등록 할 때는, 해당 Dom이 선언 된 이후에 실행되어야 정상적으로 연결됩니다. -->
+<!-- 따라서 대부분의 콜백메소드를 등록하는 스크립트는 Dom이 그려진 이후에 실행하도록 하는 것이 바람직합니다. -->
+<script>
+    $("#requestBtn").on("click", function () {
+        $.ajax({
             url: "{% url 'chartjs_app:ajax_test'%}",
-            data: { name: "홍길동" },
+            data: {name: "홍길동"},
             method: "POST",
             dataType: "json",
-          })
+        })
             .done(function (response) {
-              alert("요청 성공");
-              $("#reply").html(response["hello"]);
-              console.log('hello')
+                alert("요청 성공");
+                $("#reply").html(response["hello"]);
+                console.log('hello')
             })
             .fail(function () {
-              alert("요청 실패");
+                alert("요청 실패");
             })
             .always(function () {
-              alert("요청 완료");
-                var chart = document.getElementById('chart').innerText
+                alert("요청 완료");
+                var chart = document.getElementById('myChart').innerText
                 console.log(chart)
-
-                $(document).ready(function(){
-                alert('hi - load');
-                eval(chart)
-                });
             });
-        });
-      });
-    </script>
-  </head>
-
-  <body>
-    <h1>$.ajax() 메소드</h1>
-    <button id="requestBtn">$.ajax() 메소드 실행</button>
-    <div id="reply"></div>
-    >
-    <p id="text"></p>
-  </body>
+    });
+    $(document).ready(function () {
+        console.log('$(document).ready는 document가 로딩 완료되었을 때 실행되는 콜백입니다.')
+    });
+</script>
